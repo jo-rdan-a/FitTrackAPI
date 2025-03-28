@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "numero": 5,
+        "capacidade": 4,
+        "localizacao": "Área interna"
+    },
+    {
+        "id": 2,
+        "numero": 8,
+        "capacidade": 2,
+        "localizacao": "Área externa"
+    },
+    {
+        "id": 3,
+        "numero": 12,
+        "capacidade": 6,
+        "localizacao": "Área VIP"
+    }
+]

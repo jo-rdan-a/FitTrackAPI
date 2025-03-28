@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "data_reserva": "2025-02-04",
+        "hora": "19:00",
+        "nome_cliente": "Jordana",
+        "numero_pessoas": 4
+    },
+    {
+        "id": 2,
+        "data_reserva": "2025-02-04",
+        "hora": "17:00",
+        "nome_cliente": "Tavares",
+        "numero_pessoas": 4
+    }
+]
