@@ -1,0 +1,48 @@
+:root{
+    --color-fuel-yellow-50: #fef8ec;
+    --color-fuel-yellow-100: #fbedca;
+    --color-fuel-yellow-200: #f6d991;
+    --color-fuel-yellow-300: #f2bf57;
+    --color-fuel-yellow-400: #eea82f;
+    --color-fuel-yellow-500: #e78819;
+    --color-fuel-yellow-600: #cc6613;
+    --color-fuel-yellow-700: #aa4713;
+    --color-fuel-yellow-800: #8a3816;
+    --color-fuel-yellow-900: #722f15;
+    --color-fuel-yellow-950: #411607;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #37373d !important;
+}
+
+.text-fit{
+    color: var(--color-fuel-yellow-500);
+}
+
+.borda-fit{
+    border: 2px solid var(--color-fuel-yellow-500) !important;
+}
+
+.bg-input{
+    background-color: #444444;
+    color: #B0B0B0 !important;
+}.bg-input:focus{
+    background-color: #444444;
+}
+.bg-input::placeholder{
+    color: #B0B0B0 !important;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.alert {
+    margin-top: 1rem;
+}
+
+form .form-label {
+    font-weight: 500;
+}

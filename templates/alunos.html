@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Todos os Alunos{% endblock %}
+
+{% block content %}
+<div class="w-100 bg-dark rounded p-3 d-flex justify-content-between mb-3">
+    <h3 class="m-0 text-fit">Lista de Alunos Cadastrados</h3>
+    <div class="d-flex gap-3">
+        <a href="/fichas/criar" class="btn btn-success"><i class="bi bi-journal-text"></i> Nova ficha de treino</a>
+        <a href="/instrutor/{{ instrutor_id }}/exercicio/novo" class="btn btn-primary"><i class="bi bi-plus"></i> Novo Exercício</a>
+        <a href="/instrutor/{{ instrutor_id }}/dashboard" class="btn btn-secondary">Voltar <i class="bi-arrow-right"></i></a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-dark table-bordered table-stripped border-warning table-hover align-middle text-center">
+        <thead class="text-dark">
+            <tr>
+                <th class="bg-dark text-warning">ID</th>
+                <th class="bg-dark text-warning">Nome</th>
+                <th class="bg-dark text-warning">Email</th>
+                <th class="bg-dark text-warning">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aluno in alunos %}
+            <tr>
+                <td>{{ aluno.id }}</td>
+                <td>{{ aluno.nome }}</td>
+                <td>{{ aluno.email }}</td>
+                <td class="d-flex p-0">
+                    <a href="/instrutor/{{ instrutor_id }}/alunos/{{ aluno.id }}/editar" class="btn w-50 btn-warning rounded-0 py-3">Editar</a>
+                    <form method="POST" action="/instrutor/{{ instrutor_id }}/alunos/{{ aluno.id }}/excluir" style="display:inline;" class="w-50">
+                        <button type="submit" class="btn btn-danger w-100 rounded-0 py-3" onclick="return confirm('Tem certeza que deseja excluir este aluno?');">
+                            Excluir
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not alunos %}
+<p class="text-light mt-4">Nenhum aluno cadastrado ainda.</p>
+{% endif %}
+
+{% endblock %}

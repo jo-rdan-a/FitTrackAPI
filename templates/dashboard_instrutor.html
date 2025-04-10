@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Instrutor {{ instrutor.nome }}{% endblock %}
+
+{% block content %}
+
+<div class="w-100 bg-dark rounded p-3 d-flex justify-content-between mb-3">
+    <h3 class="m-0 text-fit">Menu</h3>
+    <div class="d-flex gap-3">
+        <a href="/fichas/criar" class="btn btn-success"><i class="bi bi-journal-text"></i> Nova ficha de treino</a>
+        <a href="/instrutor/{{ instrutor.id }}/exercicio/novo" class="btn btn-primary"><i class="bi bi-plus"></i> Novo Exercício</a>
+        <a href="/instrutor/{{ instrutor.id }}/alunos" class="btn btn-info"><i class="bi bi-people-fill"></i> Ver alunos</a>
+    </div>
+</div>
+
+{% if fichas %}
+<h4 class="text-fit">Fichas Criadas</h4>
+<div class="accordion" id="accordionFichas">
+    {% for ficha in fichas %}
+    <div class="accordion-item border-warning">
+        <h2 class="accordion-header bg-dark" id="heading{{ ficha.id }}">
+            <button class="accordion-button collapsed bg-warning text-light text-dark" type="button"
+                data-bs-toggle="collapse" data-bs-target="#collapse{{ ficha.id }}" aria-expanded="false"
+                aria-controls="collapse{{ ficha.id }}">
+                Ficha de {{ ficha.aluno.nome }} - Início: {{ ficha.data_inicio }}
+            </button>
+        </h2>
+        <div id="collapse{{ ficha.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ ficha.id }}"
+            data-bs-parent="#accordionFichas">
+            <div class="accordion-body bg-input text-light">
+                {% for dia in ficha.dias %}
+                <div class="d-flex">
+                    <h5>
+                        {% if dia.dia_semana == 1 %}Segunda
+                        {% elif dia.dia_semana == 2 %}Terça
+                        {% elif dia.dia_semana == 3 %}Quarta
+                        {% elif dia.dia_semana == 4 %}Quinta
+                        {% elif dia.dia_semana == 5 %}Sexta
+                        {% endif %}
+                    </h5>
+                    <p class="ms-2"> - {{ dia.descricao }}</p>
+                </div>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="bg-warning">Exercício</th>
+                            <th class="bg-warning">Grupo Muscular</th>
+                            <th class="bg-warning">Séries</th>
+                            <th class="bg-warning">Repetições</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for exercicio in dia.exercicios_treino %}
+                        <tr>
+                            <td class="bg-dark text-light">{{ exercicio.exercicio.nome }}</td>
+                            <td class="bg-dark text-light">{{ exercicio.exercicio.grupo_muscular }}</td>
+                            <td class="bg-dark text-light">{{ exercicio.series }}</td>
+                            <td class="bg-dark text-light">{{ exercicio.repeticoes }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+
+                <div class="d-flex gap-2 w-100 justify-content-end">
+                    <a href="/fichas/{{ ficha.id }}/editar" class="btn btn-primary btn-sm w-50 py-3">Editar Ficha</a>
+                    <form method="POST" action="/fichas/{{ ficha.id }}/excluir" class="w-50"
+                        onsubmit="return confirm('Tem certeza que deseja excluir esta ficha semanal inteira?');">
+                        <button class="btn btn-danger btn-sm w-100 py-3">Excluir Ficha</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>Nenhuma ficha criada ainda.</p>
+{% endif %}
+{% endblock %}

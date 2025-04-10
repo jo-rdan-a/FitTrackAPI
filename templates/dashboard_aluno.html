@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ aluno.nome }}{% endblock %}
+
+{% block content %}
+
+<!-- GRÁFICO DE MEDIDAS -->
+{% if medidas %}
+<h4 class="text-fit">Histórico de Medidas</h4>
+<canvas id="graficoMedidas" width="300" height="100"></canvas>
+{% else %}
+<p>Nenhuma medida registrada ainda.</p>
+{% endif %}
+
+<div class="d-flex justify-content-end">
+    <a href="/aluno/{{ aluno.id }}/medidas" class="btn btn-warning px-5 py-2 fs-5"><i class="bi-pencil-square me-3"></i> Registre novas medidas</a>
+</div>
+<hr>
+
+<!-- FICHA DE TREINO -->
+<h4 class="mt-5 text-fit">Ficha de Treino</h4>
+
+{% if ficha %}
+<div class="row row-cols-1 row-cols-md-1 g-4">
+    {% set dias_nomes = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'] %}
+
+    {% for dia in ficha.dias | sort(attribute="dia_semana") %}
+    <div class="col">
+        <div class="card shadow-sm border-0 bg-dark-subtle">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-calendar-week me-2"></i>
+                    {{ dias_nomes[dia.dia_semana - 1] }} – {{ dia.nome_treino }}
+                </h5>
+            </div>
+            <div class="card-body p-3 bg-dark text-dark">
+                {% if dia.exercicios_treino %}
+                <ul class="list-group list-group-flush">
+                    {% for ex in dia.exercicios_treino %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-dark text-fit">
+                        <div>
+                            <strong class="">{{ ex.exercicio.nome }}</strong>
+                            <small class="text-light d-block text-light">{{ ex.exercicio.grupo_muscular }}</small>
+                        </div>
+                        <span class="badge bg-warning rounded-pill fs-5 text-dark">{{ ex.series }} x {{ ex.repeticoes }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0">Sem exercícios cadastrados para este dia.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <p class="text-muted">Ficha de treino ainda não cadastrada.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<!-- GRÁFICO -->
+<script>
+    {% if medidas %}
+        const medidas = {{ medidas | tojson }};
+        const labels = medidas.map(m => m.data);
+        const pesos = medidas.map(m => m.peso);
+        const cinturas = medidas.map(m => m.cintura);
+        const quadris = medidas.map(m => m.quadril);
+        const toraxs = medidas.map(m => m.torax);
+
+        const ctx = document.getElementById('graficoMedidas').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Peso (kg)',
+                        data: pesos,
+                        borderColor: 'blue',
+                        backgroundColor: 'blue',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Cintura (cm)',
+                        data: cinturas,
+                        borderColor: 'orange',
+                        backgroundColor: 'orange',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Quadril (cm)',
+                        data: quadris,
+                        borderColor: 'purple',
+                        backgroundColor: 'purple',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Tórax (cm)',
+                        data: toraxs,
+                        borderColor: 'red',
+                        backgroundColor: 'red',
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Evolução das Medidas Corporais'
+                    }
+                }
+            }
+        });
+    {% endif %}
+</script>
+{% endblock %}

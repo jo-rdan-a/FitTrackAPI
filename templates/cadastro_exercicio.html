@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Exercício{% endblock %}
+
+{% block content %}
+<div class="w-100 bg-dark rounded p-3 d-flex justify-content-between mb-3">
+    <h3 class="m-0 text-fit">Cadastrar novo exercício</h3>
+    <div class="d-flex gap-3">
+        <a href="/fichas/criar" class="btn btn-success"><i class="bi bi-journal-text"></i> Nova ficha de treino</a>
+        <a href="/instrutor/{{ instrutor_id }}/alunos" class="btn btn-info"><i class="bi bi-people-fill"></i> Ver alunos</a>
+        <a href="/instrutor/{{ instrutor_id }}/dashboard" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+<form method="post" onsubmit="return handleGrupoMuscular()">
+    <input type="hidden" name="instrutor_id" value="{{ instrutor_id }}">
+    
+    <div class="mb-3">
+        <label for="nome" class="form-label text-fit">Nome do exercício:</label>
+        <input type="text" class="form-control bg-input py-3 borda-fit" name="nome" placeholder="Digite o nome do exercício" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="grupo_muscular" class="form-label text-fit">Grupo muscular:</label>
+        <select class="form-select bg-input borda-fit py-3" id="grupo_muscular_select" name="grupo_muscular">
+            <option value="Peitoral">Peitoral</option>
+            <option value="Costas">Costas</option>
+            <option value="Bíceps">Bíceps</option>
+            <option value="Tríceps">Tríceps</option>
+            <option value="Pernas">Pernas</option>
+            <option value="Ombros">Ombros</option>
+            <option value="Abdômen">Abdômen</option>
+            <option value="Outro">Outro...</option>
+        </select>
+    </div>
+
+    <div class="mb-3" id="outro_grupo_container" style="display: none;">
+        <label for="outro_grupo" class="form-label">Digite o grupo muscular:</label>
+        <input type="text" class="form-control py-3" id="outro_grupo_input">
+    </div>
+
+    <div class="w-100 d-flex gap-5 mt-4">
+        <a href="/instrutor/{{ instrutor_id }}/dashboard" class="btn btn-secondary py-3 w-50">Cancelar</a>
+        <button type="submit" class="btn btn-warning py-3 w-50">Salvar</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const grupoSelect = document.getElementById("grupo_muscular_select");
+    const outroContainer = document.getElementById("outro_grupo_container");
+    const outroInput = document.getElementById("outro_grupo_input");
+
+    grupoSelect.addEventListener("change", () => {
+        if (grupoSelect.value === "Outro") {
+            outroContainer.style.display = "block";
+        } else {
+            outroContainer.style.display = "none";
+        }
+    });
+
+    function handleGrupoMuscular() {
+        if (grupoSelect.value === "Outro") {
+            const novoGrupo = outroInput.value.trim();
+            if (!novoGrupo) {
+                alert("Digite o nome do grupo muscular.");
+                return false;
+            }
+
+            // Cria dinamicamente um input escondido com o valor do grupo
+            const inputHidden = document.createElement("input");
+            inputHidden.type = "hidden";
+            inputHidden.name = "grupo_muscular";
+            inputHidden.value = novoGrupo;
+            grupoSelect.form.appendChild(inputHidden);
+        }
+        return true;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Início{% endblock %}
+{% block content %}
+<style>
+    .ts-control{
+        padding: 0 !important;
+    }
+</style>
+<!-- Tom Select -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<div class="w-100 bg-dark rounded p-3 d-flex justify-content-between mb-3">
+    <h3 class="m-0 text-fit">Editar Ficha de {{ ficha.aluno.nome }}</h3>
+</div>
+<form method="POST" action="/fichas/{{ ficha.id }}/editar">
+    {% for dia in ficha.dias %}
+    <div class="mb-4 border borda-fit bg-dark p-3 rounded">
+        <h5 class="text-fit">
+            {% if dia.dia_semana == 1 %}Segunda
+            {% elif dia.dia_semana == 2 %}Terça
+            {% elif dia.dia_semana == 3 %}Quarta
+            {% elif dia.dia_semana == 4 %}Quinta
+            {% elif dia.dia_semana == 5 %}Sexta
+            {% endif %}
+        </h5>
+
+        <div id="exercicios-dia-{{ dia.id }}">
+            {% for exercicio in dia.exercicios_treino %}
+            <div class="row mb-2 exercicio-bloco align-items-end">
+                <div class="col-md-5">
+                    <select name="exercicio_id_{{ dia.id }}[]" class="form-select bg-input borda-fit py-3">
+                        {% for opcao in exercicios %}
+                        <option value="{{ opcao.id }}" {% if opcao.id==exercicio.exercicio.id %}selected{% endif %}>
+                            {{ opcao.nome }} - {{ opcao.grupo_muscular }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="series_{{ dia.id }}[]" value="{{ exercicio.series }}"
+                        class="form-control borda-fit bg-input fs-5 py-3" placeholder="Séries">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="repeticoes_{{ dia.id }}[]" value="{{ exercicio.repeticoes }}"
+                        class="form-control borda-fit bg-input fs-5 py-3" placeholder="Repetições">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger fs-5 px-4 py-3 borda-fit"
+                        onclick="removerExercicio(this)">
+                        <i class="bi-trash3"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-warning btn-sm mt-2" onclick="adicionarExercicio({{ dia.id }})">
+            <i class="bi-plus-lg me-1"></i>Adicionar Exercício
+        </button>
+    </div>
+    {% endfor %}
+
+    <button class="btn btn-success fs-5 py-3 px-4 fw-bold" type="submit">Salvar Alterações</button>
+</form>
+
+<script>
+    function inicializarTomSelect(select) {
+        if (!select.classList.contains('ts-loaded')) {
+            new TomSelect(select, {
+                create: false,
+                sortField: "text",
+                searchField: "text",
+                placeholder: "Buscar exercício...",
+                dropdownClass: 'dropdown-menu show',
+                controlInput: '<input type="text" class="form-control py-3 text-light">',
+                render: {
+                    item: function (data, escape) {
+                        return `<div class="item py-3 text-light">${escape(data.text)}</div>`;
+                    },
+                    option: function (data, escape) {
+                        return `<div class="option py-2 px-3">${escape(data.text)}</div>`;
+                    }
+                }
+            });
+            select.classList.add('ts-loaded');
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+            document.querySelectorAll('select').forEach(inicializarTomSelect);
+        }, 50);
+    });
+
+    function adicionarExercicio(diaId) {
+        const container = document.getElementById(`exercicios-dia-${diaId}`);
+        const blocoOriginal = container.querySelector('.exercicio-bloco');
+        const novoBloco = blocoOriginal.cloneNode(true);
+
+        // Limpa os inputs
+        novoBloco.querySelectorAll('input').forEach(input => input.value = '');
+
+        // Lida com o select
+        const selectWrapper = novoBloco.querySelector('.col-md-5');
+        const nomeSelect = blocoOriginal.querySelector('select').name;
+        const opcoes = blocoOriginal.querySelectorAll('select option');
+
+        // Remove conteúdo antigo (incluindo o TomSelect modificado)
+        selectWrapper.innerHTML = '';
+
+        // Cria novo select
+        const novoSelect = document.createElement('select');
+        novoSelect.name = nomeSelect;
+        novoSelect.className = 'form-select bg-input borda-fit py-3';
+
+        // Adiciona opções
+        opcoes.forEach(opt => {
+            const novaOpcao = document.createElement('option');
+            novaOpcao.value = opt.value;
+            novaOpcao.textContent = opt.textContent;
+            novoSelect.appendChild(novaOpcao);
+        });
+
+        // Insere e ativa Tom Select
+        selectWrapper.appendChild(novoSelect);
+        inicializarTomSelect(novoSelect);
+
+        // Adiciona novo bloco ao DOM
+        container.appendChild(novoBloco);
+    }
+
+
+    function removerExercicio(botao) {
+        const bloco = botao.closest('.exercicio-bloco');
+        const container = bloco.parentNode;
+
+        if (container.querySelectorAll('.exercicio-bloco').length > 1) {
+            bloco.remove();
+        } else {
+            alert("Cada dia precisa ter pelo menos um exercício.");
+        }
+    }
+</script>
+
+{% endblock %}

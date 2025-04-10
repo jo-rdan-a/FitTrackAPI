@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Criar Ficha de Treino{% endblock %}
+
+{% block content %}
+<div class="w-100 bg-dark rounded p-3 d-flex justify-content-between mb-3">
+    <h3 class="m-0 text-fit">Montar Ficha de Treino</h3>
+    <div class="d-flex gap-3">
+        <a href="/instrutor/{{ instrutor_id }}/exercicio/novo" class="btn btn-primary"><i class="bi bi-plus"></i> Novo Exercício</a>
+        <a href="/instrutor/{{ instrutor_id }}/alunos" class="btn btn-info"><i class="bi bi-people-fill"></i> Ver alunos</a>
+        <a href="/instrutor/{{ instrutor_id }}/dashboard" class="btn btn-secondary">Voltar <i class="bi bi-chevron-right"></i></a>
+    </div>
+</div>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="aluno_id" class="form-label text-fit">Selecione o Aluno</label>
+        <select name="aluno_id" id="aluno_id" class="form-select bg-input borda-fit py-2" required>
+            <option value="">Escolha um aluno</option>
+            {% for aluno in alunos %}
+            <option value="{{ aluno.id }}">{{ aluno.nome }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% for dia in ["Segunda", "Terca", "Quarta", "Quinta", "Sexta"] %}
+    <div class="card mb-4 bg-dark text-light">
+        <div class="card-header bg-warning text-dark">
+            <strong>{{ dia }}</strong>
+        </div>
+        <div class="card-body" id="exercicios-{{ dia }}">
+            <!-- Container de exercícios do dia -->
+        </div>
+        <div class="card-footer">
+            <button type="button" class="btn btn-outline-warning" onclick="adicionarExercicio('{{ dia }}')">
+                + Adicionar Exercício
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+
+    <input type="hidden" name="instrutor_id" value="{{ instrutor_id }}">
+
+    <div class="w-100 d-flex gap-5 mt-4">
+        <a href="/instrutor/{{ instrutor_id }}/dashboard" class="btn btn-secondary py-3 w-50">Voltar <i class="bi bi-chevron-left"></i></a>
+        <button type="submit" class="btn btn-warning py-3 w-50">Salvar Ficha</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<!-- Tom Select -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<script>
+    const exerciciosDisponiveis = {{ exercicios | tojson }};
+
+    function adicionarExercicio(dia) {
+        const container = document.getElementById(`exercicios-${dia}`);
+
+        const index = container.children.length;
+
+        const div = document.createElement("div");
+        div.className = "row mb-3";
+
+        div.innerHTML = `
+      <div class="col-md-5">
+        <label>Exercício</label>
+        <select name="exercicio_id_${dia}[]" class="form-select bg-input borda-fit exercicio-select" required>
+          <option value="">Selecione</option>
+          ${exerciciosDisponiveis.map(e => `<option value="${e.id}" data-grupo="${e.grupo_muscular}">${e.nome}</option>`).join('')}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label>Séries</label>
+        <input type="number" name="series_${dia}[]" class="form-control bg-input borda-fit" placeholder="1, 2, 3..." required>
+      </div>
+      <div class="col-md-2">
+        <label>Repetições</label>
+        <input type="text" name="repeticoes_${dia}[]" class="form-control bg-input borda-fit" placeholder="11, 12, 13..." required>
+      </div>
+      <div class="col-md-3">
+        <label>Grupo Muscular</label>
+        <input type="text" class="form-control grupo-muscular bg-input borda-fit" placeholder="Auto Preenchido" readonly>
+      </div>
+    `;
+
+        container.appendChild(div);
+
+        // Ativa Tom Select no novo select
+        new TomSelect(div.querySelector('.exercicio-select'));
+
+        // Quando selecionar um exercício, preencher o grupo muscular
+        div.querySelector('.exercicio-select').addEventListener('change', function () {
+            const grupo = this.options[this.selectedIndex].getAttribute('data-grupo');
+            div.querySelector('.grupo-muscular').value = grupo || '';
+        });
+    }
+</script>
+{% endblock %}

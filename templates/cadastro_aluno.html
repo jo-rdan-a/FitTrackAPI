@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Monitoramento de Treino{% endblock %}</title>
+    <link rel="shortcut icon" href="/static/img/ginastica.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body class="text-light">
+    <main class="container p-5">
+        <div class="w-100 d-flex justify-content-center">
+            <img src="/static/img/ginastica.png" class="text-center" alt="FitTrak Logo">
+        </div>
+        <h2 class="text-center text-fit mt-1">FitTrak</h2>
+
+        {% if erro %}
+        <div class="alert alert-danger">{{ erro }}</div>
+        {% endif %}
+        
+        <form method="post" action="/cadastro">
+            <div class="mb-3">
+                <label class="form-label fs-5 text-fit">Nome</label>
+                <input type="text" name="nome" class="form-control bg-fit bg-input borda-fit py-3" placeholder="Digite seu nome" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fs-5 text-fit">Email</label>
+                <input type="email" name="email" class="form-control bg-fit bg-input borda-fit py-3" placeholder="Digite seu email" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fs-5 text-fit">Senha</label>
+                <input type="password" name="senha" class="form-control bg-fit bg-input borda-fit py-3" placeholder="Digite sua senha" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fs-5 text-fit">Idade</label>
+                <input type="number" name="idade" class="form-control bg-fit bg-input borda-fit py-3" placeholder="Digite sua idade" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fs-5 text-fit">Objetivo</label>
+                <select name="objetivo" id="objetivo" class="form-select bg-input py-3 borda-fit" onchange="toggleOutro(this.value)" required>
+                    <option value="">Selecione um objetivo</option>
+                    <option value="Emagrecimento">Emagrecimento</option>
+                    <option value="Hipertrofia">Hipertrofia</option>
+                    <option value="Condicionamento físico">Condicionamento físico</option>
+                    <option value="Reabilitação">Reabilitação</option>
+                    <option value="Manutenção da saúde">Manutenção da saúde</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+
+            <div class="mb-3" id="outro_objetivo_div" style="display: none;">
+                <label class="form-label fs-5 text-fit">Descreva seu objetivo</label>
+                <input type="text" name="outro_objetivo" class="form-control bg-input borda-fit py-3 bg-fit" placeholder="Qual seu objetivo">
+            </div>
+            <div class="w-100 d-flex gap-5 mt-4">
+                <div class="w-50">
+                    <a href="/login" class="btn btn-secondary w-100 py-3 fw-bold fs-5"><i class="bi bi-arrow-left me-3"></i> Voltar</a>
+                </div>
+                <div class="w-50">
+                    <button type="submit" class="btn btn-warning w-100 py-3 fw-bold fs-5">Cadastrar <i class="bi bi-person-plus-fill ms-3"></i></button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        function toggleOutro(valor) {
+            const divOutro = document.getElementById("outro_objetivo_div");
+            if (valor === "Outro") {
+                divOutro.style.display = "block";
+            } else {
+                divOutro.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
