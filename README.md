@@ -124,7 +124,7 @@ FitTrakAPI/
 
 ## 📚 Autor
 
-Desenvolvido por **Weslem**, estudante do IFCE - Boa Viagem, como parte de um projeto acadêmico para aplicação de tecnologias web modernas no contexto de Educação Física e Treinamento Personalizado.
+Desenvolvido por **Jordana dos Reis**, estudante do IFCE - Boa Viagem, como parte de um projeto acadêmico para aplicação de tecnologias web modernas no contexto de Educação Física e Treinamento Personalizado.
 
 ---
 
