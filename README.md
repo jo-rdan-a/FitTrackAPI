@@ -85,21 +85,38 @@ uvicorn main:app --reload
 ## 🗂️ Estrutura de diretórios
 
 ```
-├── main.py
-├── models/
-│   └── models.py
+FitTrakAPI/
 ├── dao/
 │   └── database.py
-├── routes/
-│   └── instrutor_routes.py
+├── models/
+│   └── models.py
+├── routers/
+│   ├── alunos.py
+│   ├── auth.py
+│   ├── fichas.py
+│   ├── instrutores.py
+│   └── medidas.py
+├── static/
+│   ├── style.css
+│   └── img/
+│       └── ginastica.png
 ├── templates/
 │   ├── base.html
+│   ├── index.html
+│   ├── login.html
 │   ├── alunos.html
+│   ├── dashboard_aluno.html
+│   ├── dashboard_instrutor.html
+│   ├── cadastro_aluno.html
+│   ├── cadastro_exercicio.html
+│   ├── cadastro_medidas.html
 │   ├── criar_ficha.html
 │   ├── editar_aluno.html
-│   └── dashboard_instrutor.html
-├── static/
-│   └── (CSS/JS personalizados)
+│   └── editar_ficha.html
+├── main.py
+├── requirements.txt
+├── docker-compose.yml
+├── Dockerfile
 └── README.md
 ```
 
